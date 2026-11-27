@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Research OS — ระบบช่วยงานวิจัยหน่วยอายุรศาสตร์ทั่วไป รพ.จุฬาภรณ์</title>
+<title>Research OS — ระบบช่วยงานวิจัยงานอายุรกรรมทั่วไป รพ.จุฬาภรณ์</title>
 <meta name="description" content="Research OS: เว็บแอปหน้าเดียว ไม่มี backend ข้อมูลอยู่ในเบราว์เซอร์ ช่วยตั้งคำถามวิจัย FINER/PICO, ติดตามโครงการวิจัย, เลือก reporting guideline, คำนวณขนาดตัวอย่าง และตรวจการใช้ AI อย่างมีจริยธรรม">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Crect width=%2748%27 height=%2748%27 rx=%2710%27 fill=%27%230f766e%27/%3E%3Cpath d=%27M24 10v28M10 24h28%27 stroke=%27white%27 stroke-width=%276%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
-<meta property="og:title" content="Research OS — ระบบช่วยงานวิจัยหน่วยอายุรศาสตร์ทั่วไป รพ.จุฬาภรณ์">
+<meta property="og:title" content="Research OS — ระบบช่วยงานวิจัยงานอายุรกรรมทั่วไป รพ.จุฬาภรณ์">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
@@ -100,14 +100,14 @@ footer{max-width:1180px;margin:0 auto;padding:6px 14px 30px;color:var(--mut);fon
 <header>
   <div class="hwrap">
     <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fff" fill-opacity=".15"/><path d="M24 10v28M10 24h28" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="24" cy="24" r="5" fill="#5eead4"/></svg>
-    <div><h1>Research OS</h1><p>ระบบช่วยงานวิจัยของหน่วย · หน่วยอายุรศาสตร์ทั่วไป โรงพยาบาลจุฬาภรณ์</p></div>
+    <div><h1>Research OS</h1><p>ระบบช่วยงานวิจัยของหน่วย · งานอายุรกรรมทั่วไป โรงพยาบาลจุฬาภรณ์</p></div>
     <div class="priv" title="ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น">🔒 ข้อมูลอยู่ในเครื่องคุณเท่านั้น</div>
   </div>
 </header>
 <nav aria-label="เมนูหลัก"><div class="tabs" role="tablist" id="tabs"></div></nav>
 <main id="app" tabindex="-1"></main>
 <footer>
-  ผลงานส่วนบุคคลของ ดร.พญ.กมลทิพย์ เลิศชัยสถาพร เพื่อประกอบการคัดเลือกเข้าร่วมโครงการ — ไม่ใช่ระบบอย่างเป็นทางการของโรงพยาบาล · เครื่องมือช่วยเตรียมงาน ไม่ใช่คำแนะนำทางการแพทย์ · ห้ามใส่ข้อมูลที่ระบุตัวผู้ป่วยได้
+  ผลงานส่วนบุคคลของ ดร.พญ.กมลทิพย์ เลิศชัยสถาพร — ไม่ใช่ระบบอย่างเป็นทางการของโรงพยาบาล · เครื่องมือช่วยเตรียมงาน ไม่ใช่คำแนะนำทางการแพทย์ · ห้ามใส่ข้อมูลที่ระบุตัวผู้ป่วยได้
 </footer>
 <dialog id="dlg"><form id="pform" method="dialog">
   <h3 id="dtitle" style="margin:0 0 6px;font-family:Prompt;color:var(--navy)">โครงการวิจัย</h3>
@@ -313,12 +313,11 @@ function render(){
 function vConcept(){
  return `
 <div class="card hero"><div>
-  <span class="badge t">ผลงานเพื่อประกอบการคัดเลือก</span>
   <h2>Research OS: จัดงานวิจัยของหน่วยให้เป็นระบบ ในหน้าเว็บเดียว</h2>
   <p>เครื่องมือช่วยตั้งคำถามวิจัย ติดตามโครงการ เลือกแนวทางรายงาน (reporting guideline) คำนวณขนาดตัวอย่าง และตรวจการใช้ AI อย่างมีจริยธรรม — ทำงานได้เต็มที่ในเบราว์เซอร์ <b>ไม่มีเซิร์ฟเวอร์ ไม่ส่งข้อมูลออก ไม่ต้องล็อกอิน</b></p>
   <div class="row"><button class="btn" data-act="tab" data-v="question">เริ่มลองใช้งาน</button><button class="btn sec" data-act="tab" data-v="board">ดูบอร์ดตัวอย่าง</button></div>
 </div>
-<div class="note" style="margin:0"><b>ผู้พัฒนา</b><br>ดร.พญ.กมลทิพย์ เลิศชัยสถาพร<br>อายุรแพทย์โรคเลือด · หน่วยอายุรศาสตร์ทั่วไป โรงพยาบาลจุฬาภรณ์<br><small>จัดทำเพื่อโครงการพัฒนาศักยภาพการบริหารจัดการของหัวหน้าหน่วย หัวหน้าหอ และบุคลากรที่มีศักยภาพทาง AI</small></div></div>
+<div class="note" style="margin:0"><b>ผู้พัฒนา</b><br>ดร.พญ.กมลทิพย์ เลิศชัยสถาพร<br>อายุรแพทย์โรคเลือด · งานอายุรกรรมทั่วไป โรงพยาบาลจุฬาภรณ์</div></div>
 
 <div class="grid g2">
  <div class="card"><h2>1. ปัญหาในหน่วยงาน</h2>
