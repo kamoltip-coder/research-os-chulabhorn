@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research OS — ระบบช่วยงานวิจัยหน่วยอายุรศาสตร์ทั่วไป รพ.จุฬาภรณ์</title>
+<meta name="description" content="Research OS: เว็บแอปหน้าเดียว ไม่มี backend ข้อมูลอยู่ในเบราว์เซอร์ ช่วยตั้งคำถามวิจัย FINER/PICO, ติดตามโครงการวิจัย, เลือก reporting guideline, คำนวณขนาดตัวอย่าง และตรวจการใช้ AI อย่างมีจริยธรรม">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Crect width=%2748%27 height=%2748%27 rx=%2710%27 fill=%27%230f766e%27/%3E%3Cpath d=%27M24 10v28M10 24h28%27 stroke=%27white%27 stroke-width=%276%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<meta property="og:title" content="Research OS — ระบบช่วยงานวิจัยหน่วยอายุรศาสตร์ทั่วไป รพ.จุฬาภรณ์">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#12355b;--teal:#0f766e;--teal-d:#0b5a54;--teal-l:#e6f4f2;--bg:#f4f7fa;--card:#fff;--line:#d9e2ea;--tx:#1b2733;--mut:#5b6b7a;--warn:#b45309;--warn-l:#fef3c7;--bad:#b91c1c;--bad-l:#fee2e2;--ok:#15803d;--ok-l:#dcfce7;--r:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Sarabun','Prompt','Noto Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;font-size:16px}
+h1,h2,h3,h4,.tab,button,.badge{font-family:'Prompt','Sarabun','Noto Sans Thai',system-ui,sans-serif}
+header{background:linear-gradient(135deg,var(--navy),var(--teal-d));color:#fff;padding:14px 16px}
+.hwrap{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;flex:none}
+header h1{margin:0;font-size:1.25rem;font-weight:600;line-height:1.2}
+header p{margin:2px 0 0;font-size:.82rem;opacity:.9}
+.priv{margin-left:auto;font-size:.75rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:4px 10px;border-radius:99px;white-space:nowrap}
+nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.tabs{max-width:1180px;margin:0 auto;display:flex;overflow-x:auto;padding:0 8px;scrollbar-width:thin}
+.tab{flex:none;border:0;background:none;padding:12px 14px;font-size:.92rem;color:var(--mut);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--teal)}
+.tab[aria-selected=true]{color:var(--teal-d);border-bottom-color:var(--teal);font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:18px 14px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(18,53,91,.05)}
+.card h2{margin:0 0 4px;font-size:1.2rem;color:var(--navy)}
+.card h3{margin:16px 0 6px;font-size:1rem;color:var(--teal-d)}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.92rem}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.priv{display:none}}
+label{display:block;font-weight:500;font-size:.88rem;margin:10px 0 3px;color:var(--navy)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid #b8c6d3;border-radius:8px;font:inherit;background:#fff;color:var(--tx)}
+textarea{min-height:76px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible,.tab:focus-visible{outline:3px solid #7dd3c8;outline-offset:1px;border-color:var(--teal)}
+button.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-size:.9rem;cursor:pointer;font-weight:500}
+button.btn:hover{background:var(--teal-d)}
+button.btn.sec{background:#fff;color:var(--teal-d);border:1px solid var(--teal)}
+button.btn.sec:hover{background:var(--teal-l)}
+button.btn.dng{background:#fff;color:var(--bad);border:1px solid #e9a3a3}
+button.btn.dng:hover{background:var(--bad-l)}
+button.btn.sm{padding:4px 9px;font-size:.78rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--warn-l);color:var(--warn);font-weight:500}
+.badge.t{background:var(--teal-l);color:var(--teal-d)}
+.note{background:var(--teal-l);border-left:4px solid var(--teal);padding:10px 14px;border-radius:6px;font-size:.9rem;margin:10px 0}
+.note.w{background:var(--warn-l);border-color:var(--warn)}
+.note.b{background:var(--bad-l);border-color:var(--bad)}
+.out{background:#f8fafc;border:1px dashed #9fb3c4;border-radius:8px;padding:12px;margin-top:10px;white-space:pre-wrap;font-size:.95rem}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:center}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+.hero h2{font-size:1.5rem}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;padding:8px 0 8px 38px;position:relative;border-bottom:1px solid #edf1f5}
+.steps li:before{content:counter(s);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:26px;font-size:.82rem;font-family:Prompt}
+.steps a{color:var(--teal-d);font-weight:600;text-decoration:none;cursor:pointer}
+ul.clean{margin:6px 0;padding-left:20px}
+.board{display:grid;grid-template-columns:repeat(6,minmax(176px,1fr));gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity}
+.col{background:#eef3f7;border-radius:10px;padding:8px;min-height:120px;scroll-snap-align:start}
+.col h4{margin:2px 4px 8px;font-size:.85rem;color:var(--navy);display:flex;justify-content:space-between}
+.pc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:8px;font-size:.88rem}
+.pc b{font-family:Prompt;font-weight:500;display:block;margin-bottom:3px;word-break:break-word}
+.chip{display:inline-block;font-size:.72rem;padding:1px 8px;border-radius:99px;background:#e5eaf0;color:var(--mut)}
+.chip.over{background:var(--bad-l);color:var(--bad)}.chip.soon{background:var(--warn-l);color:var(--warn)}.chip.ok{background:var(--ok-l);color:var(--ok)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px}
+.stat{background:var(--teal-l);border-radius:10px;padding:8px 14px;min-width:110px}
+.stat b{font-size:1.4rem;font-family:Prompt;color:var(--teal-d);display:block;line-height:1.2}
+.stat span{font-size:.78rem;color:var(--mut)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:7px 4px;border-bottom:1px solid #eef2f6}
+.check input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--teal)}
+.check label{margin:0;font-weight:400;color:var(--tx);font-size:.93rem}
+.bar{height:10px;background:#e2e8ef;border-radius:99px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--teal);transition:width .2s}
+.finer{display:grid;grid-template-columns:1fr 150px;gap:8px 12px;align-items:center;padding:8px 0;border-bottom:1px solid #eef2f6}
+@media(max-width:560px){.finer{grid-template-columns:1fr}}
+.finer small{color:var(--mut);display:block}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+mark{background:#fde68a;padding:0 2px;border-radius:3px}
+mark.r{background:#fecaca}
+dialog{border:0;border-radius:14px;padding:20px;max-width:520px;width:calc(100% - 28px);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(15,30,50,.5)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:99px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;z-index:99;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+footer{max-width:1180px;margin:0 auto;padding:6px 14px 30px;color:var(--mut);font-size:.8rem;text-align:center}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem}
+.pass{color:var(--ok)}.fail{color:var(--bad);font-weight:600}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:#fff;padding:6px;z-index:100}
+@media print{header,nav,footer,.noprint{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#app">ข้ามไปเนื้อหา</a>
+<header>
+  <div class="hwrap">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fff" fill-opacity=".15"/><path d="M24 10v28M10 24h28" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="24" cy="24" r="5" fill="#5eead4"/></svg>
+    <div><h1>Research OS</h1><p>ระบบช่วยงานวิจัยของหน่วย · หน่วยอายุรศาสตร์ทั่วไป โรงพยาบาลจุฬาภรณ์</p></div>
+    <div class="priv" title="ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น">🔒 ข้อมูลอยู่ในเครื่องคุณเท่านั้น</div>
+  </div>
+</header>
+<nav aria-label="เมนูหลัก"><div class="tabs" role="tablist" id="tabs"></div></nav>
+<main id="app" tabindex="-1"></main>
+<footer>
+  ผลงานส่วนบุคคลของ ดร.พญ.กมลทิพย์ เลิศชัยสถาพร เพื่อประกอบการคัดเลือกเข้าร่วมโครงการ — ไม่ใช่ระบบอย่างเป็นทางการของโรงพยาบาล · เครื่องมือช่วยเตรียมงาน ไม่ใช่คำแนะนำทางการแพทย์ · ห้ามใส่ข้อมูลที่ระบุตัวผู้ป่วยได้
+</footer>
+<dialog id="dlg"><form id="pform" method="dialog">
+  <h3 id="dtitle" style="margin:0 0 6px;font-family:Prompt;color:var(--navy)">โครงการวิจัย</h3>
+  <label for="p_title">ชื่อโครงการ (ห้ามใส่ชื่อ/HN ผู้ป่วย)</label><input id="p_title" required maxlength="200">
+  <div class="grid g2">
+    <div><label for="p_owner">ผู้รับผิดชอบ (ชื่อทีม/ชื่อย่อ)</label><input id="p_owner" maxlength="80"></div>
+    <div><label for="p_stage">ขั้นตอนปัจจุบัน</label><select id="p_stage"></select></div>
+    <div><label for="p_deadline">กำหนดส่ง/เหตุการณ์ถัดไป</label><input id="p_deadline" type="date"></div>
+    <div><label for="p_design">รูปแบบการวิจัย (ถ้าทราบ)</label><select id="p_design"></select></div>
+  </div>
+  <label for="p_note">บันทึก</label><textarea id="p_note" maxlength="600"></textarea>
+  <div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn sec" id="p_cancel">ยกเลิก</button><button class="btn" type="submit">บันทึก</button></div>
+</form></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,'0');
+const isoLocal=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const todayISO=()=>isoLocal(new Date());
+const addDays=n=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);return isoLocal(d)};
+const daysUntil=iso=>{if(!iso)return null;const a=new Date(iso+'T12:00:00'),b=new Date();b.setHours(12,0,0,0);return Math.round((a-b)/864e5)};
+const fmtDate=iso=>{if(!iso)return '—';try{return new Date(iso+'T12:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}catch(e){return iso}};
+let toastT;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600)};
+
+/* ---------- data ---------- */
+const STAGES=[
+ {id:'idea',th:'ไอเดีย'},{id:'proposal',th:'เขียน Proposal'},{id:'ec',th:'ยื่นจริยธรรม (EC)'},
+ {id:'data',th:'เก็บข้อมูล'},{id:'analysis',th:'วิเคราะห์'},{id:'manuscript',th:'ต้นฉบับ/ตีพิมพ์'}];
+const GL={
+ consort:{name:'CONSORT 2010',use:'การทดลองแบบสุ่มมีกลุ่มควบคุม (RCT)',url:'https://www.consort-spirit.org/',items:[
+  'ชื่อเรื่องระบุว่าเป็น randomised trial','บทคัดย่อแบบมีโครงสร้าง','เหตุผล/ความเป็นมา และวัตถุประสงค์ (สมมติฐาน)','รูปแบบการทดลอง (เช่น parallel, อัตราส่วนการจัดสรร)','เกณฑ์คัดเข้า/คัดออก และสถานที่เก็บข้อมูล','รายละเอียดการแทรกแซงของแต่ละกลุ่มจนทำซ้ำได้','ผลลัพธ์หลัก/รอง ที่กำหนดไว้ล่วงหน้า (และการเปลี่ยนแปลงหลังเริ่ม)','วิธีคำนวณขนาดตัวอย่าง','การสร้างลำดับสุ่ม (sequence generation)','การปกปิดการจัดสรร (allocation concealment)','ใครสุ่ม/ใครรับอาสาสมัคร/ใครจัดกลุ่ม','การปกปิดข้อมูล (blinding) ถ้ามี','วิธีสถิติเปรียบเทียบผลลัพธ์ และการวิเคราะห์กลุ่มย่อย','แผนภาพการไหลของผู้เข้าร่วม (flow diagram)','ช่วงเวลารับสมัครและติดตาม','ตารางข้อมูลพื้นฐานแต่ละกลุ่ม','จำนวนที่นำเข้าวิเคราะห์ในแต่ละกลุ่ม','ผลลัพธ์พร้อมขนาดผลและช่วงความเชื่อมั่น (CI)','อันตราย/อาการไม่พึงประสงค์ทั้งหมด','ข้อจำกัด และการนำไปใช้ทั่วไป (generalisability)','การแปลผลสอดคล้องกับผลลัพธ์ ทั้งประโยชน์และโทษ','เลขทะเบียนการทดลอง (trial registration)','ที่เข้าถึง protocol ฉบับเต็ม','แหล่งทุน']},
+ strobe:{name:'STROBE',use:'การศึกษาเชิงสังเกต: cohort, case-control, cross-sectional',url:'https://www.strobe-statement.org/',items:[
+  'ชื่อเรื่อง/บทคัดย่อระบุรูปแบบการศึกษา','เหตุผลและความเป็นมา','วัตถุประสงค์และสมมติฐานที่กำหนดไว้','องค์ประกอบสำคัญของรูปแบบการศึกษาในช่วงต้นของบทความ','สถานที่ ช่วงเวลา การรับเข้า ติดตาม และเก็บข้อมูล','เกณฑ์คัดเข้า แหล่งที่มา วิธีเลือกผู้เข้าร่วม (และการจับคู่ถ้ามี)','นิยามผลลัพธ์ ตัวสัมผัส ตัวทำนาย confounder และ effect modifier','แหล่งข้อมูลและวิธีวัดของแต่ละตัวแปร','ความพยายามจัดการอคติ (bias)','เหตุผลของขนาดตัวอย่าง','วิธีจัดการตัวแปรเชิงปริมาณ','วิธีสถิติ รวมการควบคุม confounding, missing data, การวิเคราะห์ความไว','จำนวนผู้เข้าร่วมในแต่ละขั้นตอน (และแผนภาพ)','ข้อมูลเชิงพรรณนา และจำนวนข้อมูลที่ขาดของแต่ละตัวแปร','ข้อมูลผลลัพธ์ (จำนวนเหตุการณ์/ค่าสรุป)','ผลหลักแบบ unadjusted และ adjusted พร้อม CI และเหตุผลที่เลือกตัวแปรปรับ','การวิเคราะห์อื่น เช่น กลุ่มย่อย/ความไว','สรุปผลหลักโดยอ้างวัตถุประสงค์','ข้อจำกัด ทั้งอคติและความไม่แม่นยำ','การแปลผลอย่างระมัดระวัง และการนำไปใช้ต่อ (generalisability)','แหล่งทุนและบทบาทของผู้ให้ทุน']},
+ prisma:{name:'PRISMA 2020',use:'การทบทวนวรรณกรรมอย่างเป็นระบบ / meta-analysis',url:'https://www.prisma-statement.org/',items:[
+  'ชื่อเรื่องระบุว่าเป็น systematic review','บทคัดย่อแบบมีโครงสร้าง','เหตุผลของการทบทวนในบริบทความรู้เดิม','วัตถุประสงค์/คำถาม (เช่น PICO)','เกณฑ์คัดเข้า-คัดออกการศึกษา','แหล่งข้อมูลทั้งหมดที่ค้น และวันที่ค้นครั้งสุดท้าย','กลยุทธ์การค้นหาฉบับเต็มอย่างน้อยหนึ่งฐานข้อมูล','กระบวนการคัดเลือกการศึกษา (กี่คน ทำอิสระหรือไม่)','กระบวนการเก็บข้อมูลจากรายงาน','รายการข้อมูลที่เก็บ (outcome domain และตัวแปรอื่น)','วิธีประเมินความเสี่ยงต่ออคติ (risk of bias) ของแต่ละการศึกษา','ตัววัดขนาดผล (effect measure)','วิธีสังเคราะห์ผลและเกณฑ์ตัดสินว่ารวมได้','วิธีประเมิน reporting bias','วิธีประเมินความเชื่อมั่นของหลักฐาน (certainty)','ผลการคัดเลือก พร้อมแผนภาพ PRISMA flow','ลักษณะของแต่ละการศึกษาที่รวม','ผลประเมินความเสี่ยงต่ออคติ','ผลของแต่ละการศึกษา','ผลการสังเคราะห์ ความต่างกัน (heterogeneity) และความไว','ข้อจำกัดของหลักฐาน และของกระบวนการทบทวน','การลงทะเบียน/protocol (เช่น PROSPERO) และการเปลี่ยนแปลง','แหล่งทุน/ผลประโยชน์ทับซ้อน','ข้อมูลและโค้ดที่เปิดเผย']},
+ squire:{name:'SQUIRE 2.0',use:'งานพัฒนาคุณภาพ (QI)',url:'https://www.squire-statement.org/',items:[
+  'ชื่อเรื่องระบุว่าเป็นงานพัฒนาคุณภาพ','บทคัดย่อ','อธิบายปัญหา (problem description)','ความรู้ที่มีอยู่เดิม','เหตุผล/ทฤษฎีการเปลี่ยนแปลงที่ใช้','เป้าหมายเฉพาะ (specific aims) วัดได้และมีเวลา','บริบทที่มีผลต่อการเปลี่ยนแปลง','รายละเอียดการแทรกแซงจนทำซ้ำได้','วิธีศึกษาผลของการแทรกแซง (รวม PDSA)','ตัวชี้วัด process/outcome/balancing','วิธีวิเคราะห์ (เช่น run chart/SPC)','ข้อพิจารณาด้านจริยธรรม','ผลลัพธ์ตามเวลา และสิ่งที่ไม่คาดคิด','สรุปความสำเร็จ/จุดอ่อน','การแปลผล และข้อจำกัด','ข้อสรุปและการนำไปขยายผล','แหล่งทุน']},
+ stard:{name:'STARD 2015',use:'การศึกษาความแม่นยำของการวินิจฉัย (diagnostic accuracy)',url:'https://www.equator-network.org/reporting-guidelines/stard/',items:[
+  'ระบุว่าเป็นการศึกษา diagnostic accuracy','วัตถุประสงค์และสมมติฐาน','ออกแบบ prospective/retrospective','เกณฑ์คัดเข้า และที่มาของผู้เข้าร่วม','วิธีรับสมัคร (consecutive/convenience)','สถานที่และช่วงเวลา','index test: วิธีและการแปลผลโดยละเอียด','reference standard และเหตุผล','การปกปิดผล index test/reference standard ต่อกัน','วิธีสถิติหา sensitivity/specificity และ CI','แผนภาพการไหลของผู้เข้าร่วม','ตาราง 2×2 หรือการกระจายผล','ค่าความแม่นยำพร้อม CI','อาการไม่พึงประสงค์จากการตรวจ','ข้อจำกัด และผลต่อการใช้ทางคลินิก','ทะเบียนการศึกษา/protocol']},
+ care:{name:'CARE',use:'รายงานผู้ป่วย (case report)',url:'https://www.care-statement.org/',items:[
+  'ชื่อเรื่องมีคำว่า "case report" และจุดเด่นของรายงาน','คำสำคัญ','บทคัดย่อ','บทนำ: ทำไมรายงานนี้สำคัญ','ข้อมูลผู้ป่วยแบบไม่ระบุตัวตน (de-identified)','อาการนำและประวัติสำคัญ','ตรวจร่างกายและผลตรวจ','เส้นเวลา (timeline) ของเหตุการณ์','การประเมินเพื่อวินิจฉัยและข้อจำกัด','การรักษา/การแทรกแซง','การติดตามและผลลัพธ์','ข้อสนทนา: จุดแข็ง ข้อจำกัด วรรณกรรมเกี่ยวข้อง','มุมมองของผู้ป่วย (ถ้ามี)','หนังสือยินยอมเผยแพร่จากผู้ป่วย']},
+ srqr:{name:'SRQR',use:'การวิจัยเชิงคุณภาพ',url:'https://www.equator-network.org/reporting-guidelines/srqr/',items:[
+  'ชื่อเรื่องระบุแนวทางเชิงคุณภาพและหัวข้อ','บทคัดย่อ','การกำหนดปัญหา','วัตถุประสงค์/คำถามวิจัย','แนวทางเชิงคุณภาพและกระบวนทัศน์','ลักษณะของผู้วิจัยและ reflexivity','บริบทและสถานที่','กลยุทธ์การเลือกกลุ่มตัวอย่าง','ข้อพิจารณาด้านจริยธรรม','วิธีเก็บข้อมูล และเครื่องมือ','การประมวลผลข้อมูล (ถอดเทป ไม่ระบุตัวตน)','วิธีวิเคราะห์ข้อมูล','เทคนิคเพื่อความน่าเชื่อถือ (trustworthiness)','การสังเคราะห์และแปลผล (ธีม/ทฤษฎี)','ความเชื่อมโยงกับข้อมูลดิบ (คำพูดอ้างอิง)','การเชื่อมโยงกับงานเดิม และข้อจำกัด','ผลประโยชน์ทับซ้อน/แหล่งทุน']}
+};
+const DESIGNS=[
+ {id:'',th:'— ยังไม่ระบุ —',gl:null},
+ {id:'rct',th:'การทดลองแบบสุ่ม (RCT)',gl:'consort',prep:['ลงทะเบียนการทดลอง (เช่น TCTR/ClinicalTrials.gov) ก่อนรับอาสาสมัครรายแรก','กำหนดวิธีสุ่ม การปกปิด และผลลัพธ์หลักล่วงหน้า','วางแผนติดตามความปลอดภัยและการหยุดการศึกษา']},
+ {id:'cohort',th:'Cohort',gl:'strobe',prep:['นิยามกลุ่มสัมผัส/ผลลัพธ์ และเวลาเริ่มติดตามให้ชัด','ระบุ confounder ที่จะปรับตั้งแต่ต้น','วางแผนจัดการข้อมูลสูญหายและผู้ติดตามไม่ได้']},
+ {id:'casecontrol',th:'Case-control',gl:'strobe',prep:['นิยามผู้ป่วย (case) และกลุ่มควบคุมที่มาจากประชากรเดียวกัน','ระบุแหล่งข้อมูลการสัมผัสและวิธีลด recall/selection bias','เลือกวิธีจับคู่หรือปรับตัวแปรรบกวน']},
+ {id:'cross',th:'Cross-sectional / ความชุก',gl:'strobe',prep:['กำหนดประชากรเป้าหมาย กรอบตัวอย่าง และวิธีสุ่ม','นิยามตัวแปรและเครื่องมือวัดที่ผ่านการตรวจสอบ','คำนวณขนาดตัวอย่างสำหรับการประมาณความชุก']},
+ {id:'sr',th:'Systematic review / Meta-analysis',gl:'prisma',prep:['ลงทะเบียน protocol (เช่น PROSPERO)','กำหนดกลยุทธ์ค้นหาร่วมกับบรรณารักษ์/ผู้เชี่ยวชาญ','เลือกเครื่องมือประเมิน risk of bias ล่วงหน้า']},
+ {id:'qi',th:'พัฒนาคุณภาพ (QI)',gl:'squire',prep:['ระบุปัญหาและเป้าหมายที่วัดได้ พร้อมกรอบเวลา','เลือกตัวชี้วัด process/outcome/balancing','วางรอบ PDSA และวิธีแสดงผลตามเวลา']},
+ {id:'dx',th:'ความแม่นยำการวินิจฉัย',gl:'stard',prep:['กำหนด reference standard ที่ยอมรับ','วางแผนการปกปิดผลระหว่างการทดสอบ','คำนวณขนาดตัวอย่างตามความไว/ความจำเพาะที่คาดหวัง']},
+ {id:'case',th:'รายงานผู้ป่วย (Case report)',gl:'care',prep:['ขอหนังสือยินยอมเผยแพร่จากผู้ป่วย/ญาติ','ตัดข้อมูลระบุตัวตนทั้งหมด รวมวันที่และภาพถ่ายที่ระบุตัวได้','ตรวจนโยบายของวารสารต่อ case report']},
+ {id:'qual',th:'วิจัยเชิงคุณภาพ',gl:'srqr',prep:['อธิบายแนวทาง (เช่น thematic, grounded theory) และบทบาทผู้วิจัย','วางแนวสัมภาษณ์/วิธีสุ่มตัวอย่างและเกณฑ์อิ่มตัวของข้อมูล','แผนปกปิดตัวตนผู้ให้ข้อมูลในการถอดเทป']}
+];
+const AI_GROUPS=[
+ {id:'ref',title:'1) การอ้างอิงและเนื้อหา',items:[
+  'ทุกเอกสารอ้างอิงที่ AI เสนอ ถูกค้นหาและเปิดอ่านต้นฉบับจริงใน PubMed/DOI/ฐานข้อมูลแล้ว (ไม่มีรายการที่ "น่าจะมี")',
+  'ตัวเลข คำพูด และข้อสรุปจากวรรณกรรม ตรวจเทียบกับต้นฉบับแล้ว',
+  'ไม่ให้ AI สร้างหรือ "เติม" ข้อมูล ผลวิเคราะห์ หรือผลลัพธ์ที่ไม่ได้มาจากข้อมูลจริงของโครงการ',
+  'ผู้วิจัยอ่านและแก้ทุกย่อหน้าที่ AI ร่าง และรับผิดชอบเนื้อหาทั้งหมด']},
+ {id:'pdpa',title:'2) ข้อมูลผู้ป่วยและ PDPA',items:[
+  'ไม่ใส่ชื่อ-สกุล HN/AN เลขบัตรประชาชน เบอร์โทร ที่อยู่ หรือภาพที่ระบุตัวได้ ลงในเครื่องมือ AI ใด ๆ',
+  'ข้อมูลสุขภาพเป็นข้อมูลอ่อนไหวตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล — ใช้เฉพาะข้อมูลที่ไม่ระบุตัวตน (de-identified) และตามที่ EC อนุมัติ',
+  'ไม่อัปโหลดชุดข้อมูลวิจัยดิบ หรือบันทึกเวชระเบียน เข้าเครื่องมือ AI สาธารณะ',
+  'ใช้เฉพาะเครื่องมือที่โรงพยาบาล/สถาบันอนุญาตเมื่อต้องเกี่ยวกับข้อมูลที่ไม่ใช่ข้อมูลสาธารณะ',
+  'ตรวจข้อความด้วยเครื่องมือ "ตรวจข้อมูลระบุตัวตน" ด้านล่างก่อนวางลงใน AI ทุกครั้ง']},
+ {id:'pub',title:'3) การเปิดเผยและผู้ประพันธ์',items:[
+  'ไม่ระบุ AI เป็นผู้ประพันธ์ (author) ตามแนวทาง ICMJE และผู้ประพันธ์ต้องรับผิดชอบงานเอง',
+  'ระบุการใช้ AI (ชื่อเครื่องมือ/รุ่น/วัตถุประสงค์) ตามนโยบายของวารสารหรือสถาบัน',
+  'ไม่ใส่ต้นฉบับที่เป็นความลับ (เช่น งานที่รับ peer review) ลงในเครื่องมือ AI',
+  'เก็บบันทึกว่าใช้ AI ช่วยส่วนใดของงาน เพื่อตรวจสอบย้อนหลังได้']}
+];
+
+function seed(){
+ return {v:1,example:true,
+  projects:[
+   {id:uid(),ex:true,title:'ตัวอย่าง: ทบทวนเวชระเบียนย้อนหลัง หัวข้อใดหัวข้อหนึ่งของหน่วย',owner:'ทีมวิจัย A',stage:'proposal',deadline:addDays(21),design:'cohort',note:'ตัวอย่างข้อมูล — แก้หรือลบได้'},
+   {id:uid(),ex:true,title:'ตัวอย่าง: โครงการพัฒนาคุณภาพ กระบวนการหนึ่งของหอผู้ป่วย',owner:'ทีมวิจัย B',stage:'ec',deadline:addDays(-3),design:'qi',note:'ตัวอย่างข้อมูล — กำหนดส่งเลยแล้วเพื่อแสดงการแจ้งเตือน'},
+   {id:uid(),ex:true,title:'ตัวอย่าง: ทบทวนวรรณกรรมอย่างเป็นระบบ',owner:'ทีมวิจัย C',stage:'idea',deadline:addDays(60),design:'sr',note:'ตัวอย่างข้อมูล'},
+   {id:uid(),ex:true,title:'ตัวอย่าง: รายงานผู้ป่วยน่าสนใจ',owner:'ทีมวิจัย D',stage:'manuscript',deadline:addDays(10),design:'case',note:'ตัวอย่างข้อมูล — ต้องมีหนังสือยินยอมจากผู้ป่วย'}],
+  questions:[
+   {id:uid(),ex:true,title:'ตัวอย่าง: คำถามวิจัยเชิงเปรียบเทียบ',p:'ผู้ป่วยผู้ใหญ่ที่เข้ารับการรักษาในหอผู้ป่วยอายุรกรรม',i:'โปรแกรมที่ศึกษา',c:'การดูแลตามปกติ',o:'ผลลัพธ์หลักที่เลือก',t:'ระหว่างนอนโรงพยาบาล',type:'cohort',finer:[2,1,1,2,2],saved:todayISO()}],
+  checks:{gl:{},ai:{}}};
+}
+const KEY='researchOS.v1';
+let mem=null,storageOK=true;
+function load(){
+ try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&Array.isArray(s.projects))return norm(s)}}catch(e){storageOK=false}
+ return seed();
+}
+function norm(s){
+ const str=(v,n)=>String(v==null?'':v).slice(0,n);
+ const ok=['idea','proposal','ec','data','analysis','manuscript'];
+ return {v:1,example:!!s.example,
+  projects:(Array.isArray(s.projects)?s.projects:[]).slice(0,500).map(p=>({id:str(p.id,40)||uid(),ex:!!p.ex,title:str(p.title,200),owner:str(p.owner,80),stage:ok.includes(p.stage)?p.stage:'idea',deadline:/^\d{4}-\d{2}-\d{2}$/.test(p.deadline||'')?p.deadline:'',design:DESIGNS.some(d=>d.id===p.design)?p.design:'',note:str(p.note,600)})),
+  questions:(Array.isArray(s.questions)?s.questions:[]).slice(0,500).map(q=>({id:str(q.id,40)||uid(),ex:!!q.ex,title:str(q.title,200),p:str(q.p,400),i:str(q.i,400),c:str(q.c,400),o:str(q.o,400),t:str(q.t,200),type:DESIGNS.some(d=>d.id===q.type)?q.type:'',finer:(Array.isArray(q.finer)?q.finer:[]).slice(0,5).map(x=>[0,1,2].includes(x)?x:0).concat([0,0,0,0,0]).slice(0,5),saved:str(q.saved,10)})),
+  checks:{gl:cleanChecks(s.checks&&s.checks.gl),ai:cleanChecks(s.checks&&s.checks.ai)}};
+}
+function cleanChecks(o){const r={};if(o&&typeof o==='object')for(const k of Object.keys(o).slice(0,2000))if(o[k]===true)r[str2(k)]=true;return r}
+function str2(k){return String(k).slice(0,120)}
+let S=load();
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(S));storageOK=true}catch(e){storageOK=false;mem=JSON.stringify(S)}
+}
+
+/* ---------- statistics ---------- */
+function phi(x){
+ if(x<0)return 1-phi(-x);
+ const t=x/Math.SQRT2;let term=t,sum=t;
+ for(let n=1;n<600;n++){term*=2*t*t/(2*n+1);sum+=term;if(term<1e-18*sum)break}
+ return 0.5+0.5*(2/Math.sqrt(Math.PI))*Math.exp(-t*t)*sum;
+}
+function zInv(p){
+ if(!(p>0&&p<1))return NaN;
+ let lo=-9,hi=9;
+ for(let i=0;i<120;i++){const m=(lo+hi)/2;if(phi(m)<p)lo=m;else hi=m}
+ return (lo+hi)/2;
+}
+const ceilN=x=>Math.ceil(x-1e-9);
+function zAB(alpha,power,sides){return {za:zInv(1-alpha/sides),zb:zInv(power)}}
+function nTwoProp(p1,p2,alpha,power,sides){
+ if(!(p1>0&&p1<1&&p2>0&&p2<1))return {error:'สัดส่วนต้องอยู่ระหว่าง 0 และ 1 (ไม่รวม 0 และ 1)'};
+ if(p1===p2)return {error:'p1 และ p2 ต้องไม่เท่ากัน'};
+ const {za,zb}=zAB(alpha,power,sides),pb=(p1+p2)/2;
+ const raw=Math.pow(za*Math.sqrt(2*pb*(1-pb))+zb*Math.sqrt(p1*(1-p1)+p2*(1-p2)),2)/Math.pow(p1-p2,2);
+ return {raw,n:ceilN(raw),za,zb};
+}
+function nTwoMean(sd,delta,alpha,power,sides){
+ if(!(sd>0))return {error:'SD ต้องมากกว่า 0'};
+ if(!(delta>0))return {error:'ความต่างที่ต้องการตรวจจับต้องมากกว่า 0'};
+ const {za,zb}=zAB(alpha,power,sides);
+ const raw=2*Math.pow(za+zb,2)*sd*sd/(delta*delta);
+ return {raw,n:ceilN(raw),za,zb};
+}
+function nPrev(p,d,alpha){
+ if(!(p>0&&p<1))return {error:'ความชุกที่คาดต้องอยู่ระหว่าง 0 และ 1'};
+ if(!(d>0&&d<1))return {error:'ความคลาดเคลื่อนที่ยอมรับต้องอยู่ระหว่าง 0 และ 1'};
+ const za=zInv(1-alpha/2),raw=za*za*p*(1-p)/(d*d);
+ return {raw,n:ceilN(raw),za};
+}
+function selfTest(){
+ const near=(a,b,e)=>Math.abs(a-b)<e;
+ const r=[];
+ r.push(['z(0.975) = 1.95996',near(zInv(0.975),1.959964,1e-5)]);
+ r.push(['z(0.80) = 0.84162',near(zInv(0.8),0.841621,1e-5)]);
+ r.push(['z(0.95) = 1.64485',near(zInv(0.95),1.644854,1e-5)]);
+ r.push(['z(0.995) = 2.57583',near(zInv(0.995),2.575829,1e-5)]);
+ const m=nTwoMean(10,5,0.05,0.8,2);r.push(['ความต่างค่าเฉลี่ย SD=10, Δ=5 → 63 ต่อกลุ่ม (62.79)',m.n===63&&near(m.raw,62.789,0.01)]);
+ const pp=nTwoProp(0.5,0.3,0.05,0.8,2);r.push(['สองสัดส่วน 50% vs 30% → 93 ต่อกลุ่ม (92.999)',pp.n===93&&near(pp.raw,92.9988,0.01)]);
+ const pv=nPrev(0.5,0.05,0.05);r.push(['ความชุก p=0.5, d=0.05 → 385 (384.15)',pv.n===385&&near(pv.raw,384.146,0.01)]);
+ return r;
+}
+
+/* ---------- PII scanner ---------- */
+const PII=[
+ {k:'เลขบัตรประชาชน 13 หลัก',re:/(?<!\d)\d-?\d{4}-?\d{5}-?\d{2}-?\d(?!\d)/g,sev:'r'},
+ {k:'HN/AN',re:/\b(?:HN|AN|H\.N\.|A\.N\.)\s*[:#.]?\s*\d[\d\/-]{3,}/gi,sev:'r'},
+ {k:'เบอร์โทร',re:/(?<!\d)(?:\+66|0)\s?-?[2-9]\d(?:[\s-]?\d){7}(?!\d)/g,sev:'r'},
+ {k:'อีเมล',re:/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g,sev:'r'},
+ {k:'คำนำหน้า+ชื่อ',re:/(?:นาย|นางสาว|นาง|น\.ส\.|ด\.ช\.|ด\.ญ\.|เด็กชาย|เด็กหญิง|คุณ|Mr\.|Mrs\.|Ms\.)\s?[ก-๙A-Za-z]{2,}(?:\s[ก-๙A-Za-z]{2,})?/g,sev:'y'},
+ {k:'วันที่ (อาจระบุตัวได้)',re:/(?<!\d)\d{1,2}[\/.-]\d{1,2}[\/.-](?:\d{4}|\d{2})(?!\d)/g,sev:'y'}
+];
+function scanPII(text){
+ const hits=[];
+ PII.forEach(p=>{let m;const re=new RegExp(p.re.source,p.re.flags);while((m=re.exec(text))){hits.push({s:m.index,e:m.index+m[0].length,k:p.k,sev:p.sev,t:m[0]});if(m[0].length===0)re.lastIndex++}});
+ hits.sort((a,b)=>a.s-b.s||b.e-a.e);
+ const out=[];let end=-1;for(const h of hits){if(h.s>=end){out.push(h);end=h.e}}
+ return out;
+}
+function redact(text,hits){let r='',pos=0;hits.forEach(h=>{r+=text.slice(pos,h.s)+'[ตัดออก:'+h.k+']';pos=h.e});return r+text.slice(pos)}
+
+/* ---------- routing ---------- */
+const TABS=[['concept','แนวคิด'],['question','คำถามวิจัย FINER/PICO'],['board','บอร์ดโครงการ'],['design','รูปแบบวิจัย & Guideline'],['sample','ขนาดตัวอย่าง'],['ai','AI อย่างมีจริยธรรม'],['data','ข้อมูล']];
+let tab='concept';
+const ui={qdraft:null,glProject:'',glDesign:'rct',ssMode:'prop'};
+function setTab(t,push){
+ if(!TABS.some(x=>x[0]===t))t='concept';
+ tab=t;if(push!==false&&location.hash!=='#'+t)history.replaceState(null,'','#'+t);
+ render();window.scrollTo({top:0});
+}
+function renderTabs(){
+ $('#tabs').innerHTML=TABS.map(([id,th])=>`<button class="tab" role="tab" id="tab-${id}" aria-selected="${id===tab}" data-act="tab" data-v="${id}">${th}</button>`).join('');
+}
+function render(){
+ renderTabs();
+ const f={concept:vConcept,question:vQuestion,board:vBoard,design:vDesign,sample:vSample,ai:vAI,data:vData}[tab];
+ $('#app').innerHTML=(storageOK?'':'<div class="note b">เบราว์เซอร์นี้ไม่อนุญาตให้บันทึกข้อมูลถาวร (เช่น โหมดส่วนตัว) — ข้อมูลจะหายเมื่อปิดหน้า กรุณา Export JSON เก็บไว้</div>')+f();
+ if(tab==='question')qLive();
+ if(tab==='design')gProg();
+ if(tab==='sample')ssCalc();
+}
+
+/* ---------- views ---------- */
+function vConcept(){
+ return `
+<div class="card hero"><div>
+  <span class="badge t">ผลงานเพื่อประกอบการคัดเลือก</span>
+  <h2>Research OS: จัดงานวิจัยของหน่วยให้เป็นระบบ ในหน้าเว็บเดียว</h2>
+  <p>เครื่องมือช่วยตั้งคำถามวิจัย ติดตามโครงการ เลือกแนวทางรายงาน (reporting guideline) คำนวณขนาดตัวอย่าง และตรวจการใช้ AI อย่างมีจริยธรรม — ทำงานได้เต็มที่ในเบราว์เซอร์ <b>ไม่มีเซิร์ฟเวอร์ ไม่ส่งข้อมูลออก ไม่ต้องล็อกอิน</b></p>
+  <div class="row"><button class="btn" data-act="tab" data-v="question">เริ่มลองใช้งาน</button><button class="btn sec" data-act="tab" data-v="board">ดูบอร์ดตัวอย่าง</button></div>
+</div>
+<div class="note" style="margin:0"><b>ผู้พัฒนา</b><br>ดร.พญ.กมลทิพย์ เลิศชัยสถาพร<br>อายุรแพทย์โรคเลือด · หน่วยอายุรศาสตร์ทั่วไป โรงพยาบาลจุฬาภรณ์<br>ผู้ก่อตั้ง Gradpassion<br><small>จัดทำเพื่อโครงการพัฒนาศักยภาพการบริหารจัดการของหัวหน้าหน่วย หัวหน้าหอ และบุคลากรที่มีศักยภาพทาง AI</small></div></div>
+
+<div class="grid g2">
+ <div class="card"><h2>1. ปัญหาในหน่วยงาน</h2>
+  <p class="sub">ข้อสังเกตจากการทำงาน (ไม่ใช่ผลการสำรวจ)</p>
+  <ul class="clean">
+   <li>งานวิจัยของแพทย์ประจำบ้านและบุคลากรกระจายอยู่ในไฟล์ แชท และกระดาษ ติดตามสถานะและกำหนดส่ง (เช่น การยื่นจริยธรรม) ได้ยาก</li>
+   <li>คำถามวิจัยมักยังไม่ชัดก่อนเริ่มทำ ทำให้ต้องแก้แผนกลางทาง</li>
+   <li>การเลือก reporting guideline และการคำนวณขนาดตัวอย่าง มักทำตอนท้าย ๆ ของโครงการ</li>
+   <li>เมื่อใช้ AI ช่วยเขียน มีความเสี่ยงเรื่องเอกสารอ้างอิงที่ AI สร้างขึ้นเอง และข้อมูลผู้ป่วยหลุดเข้าเครื่องมือภายนอก</li>
+  </ul></div>
+ <div class="card"><h2>2. แนวทางแก้ไข</h2>
+  <p class="sub">5 โมดูล ในหน้าเดียว</p>
+  <ul class="clean">
+   <li><b>คำถามวิจัย</b>: สร้างประโยค PICO และประเมิน FINER ก่อนลงมือ</li>
+   <li><b>บอร์ดโครงการ</b>: 6 ขั้น ตั้งแต่ไอเดียถึงต้นฉบับ พร้อมแจ้งเตือนกำหนดส่ง</li>
+   <li><b>รูปแบบวิจัย & Guideline</b>: เลือกรูปแบบ แล้วได้ checklist (CONSORT, STROBE, PRISMA, SQUIRE ฯลฯ) ติดตามรายโครงการ</li>
+   <li><b>ขนาดตัวอย่าง</b>: สูตรมาตรฐาน 3 แบบ พร้อมชุดทดสอบความถูกต้องในหน้า</li>
+   <li><b>AI อย่างมีจริยธรรม</b>: checklist ไม่แต่งอ้างอิง/PDPA, ตัวตรวจข้อมูลระบุตัวตน, ตัวร่างข้อความเปิดเผยการใช้ AI</li>
+  </ul></div>
+</div>
+
+<div class="grid g2">
+ <div class="card"><h2>3. ทำงานอย่างไร · ความเป็นส่วนตัว</h2>
+  <ul class="clean">
+   <li>เว็บแอปไฟล์เดียว คำนวณและบันทึกในเบราว์เซอร์ (localStorage) <b>ไม่มี backend ไม่มีการเรียก AI หรือ API ภายนอก</b></li>
+   <li>ไม่ควรกรอกข้อมูลผู้ป่วย — ออกแบบมาให้ใช้กับ "งานบริหารจัดการโครงการ" ไม่ใช่ข้อมูลทางคลินิก</li>
+   <li>สำรอง/ย้ายเครื่องด้วย Export/Import JSON (แท็บ "ข้อมูล")</li>
+   <li>ข้อจำกัด: ล้างข้อมูลเบราว์เซอร์แล้วข้อมูลหาย และแต่ละเครื่องแยกกัน จึงควร Export สำรอง</li>
+   <li>ข้อมูลที่เห็นตอนเปิดครั้งแรกเป็น <span class="badge">ตัวอย่าง</span> เท่านั้น รีเซ็ตได้</li>
+  </ul></div>
+ <div class="card"><h2>4. ประโยชน์ที่คาดหวัง · ต่อยอด</h2>
+  <p class="sub">เป็นประโยชน์ที่คาดจากการออกแบบ ยังไม่มีการวัดผลการใช้งานจริง</p>
+  <ul class="clean">
+   <li>เห็นภาพรวมโครงการและกำหนดส่งของหน่วยในที่เดียว</li>
+   <li>คำถามวิจัยชัดขึ้นและเลือก guideline ตั้งแต่ต้น</li>
+   <li>มีมาตรฐานเดียวกันเรื่องการใช้ AI และการปกป้องข้อมูล</li>
+  </ul>
+  <h3>ต่อยอดในอนาคต</h3>
+  <ul class="clean">
+   <li>ผู้ช่วย AI ที่ทำงานภายใต้ guardrail: ช่วยร่างคำถามจากโน้ต/ตรวจ draft กับ checklist — โดยไม่ส่งข้อมูลผู้ป่วย ใช้เครื่องมือที่โรงพยาบาลอนุมัติ และมีมนุษย์ตรวจทุกครั้ง</li>
+   <li>ใช้ร่วมกันเป็นทีมตามนโยบายความปลอดภัยข้อมูลของโรงพยาบาล</li>
+  </ul></div>
+</div>
+
+<div class="card"><h2>ลองใช้งานใน 3 นาที</h2>
+ <ol class="steps">
+  <li><a data-act="tab" data-v="question">ตั้งคำถามวิจัย</a> — กรอก P-I-C-O แล้วดูประโยคคำถามและผล FINER</li>
+  <li><a data-act="tab" data-v="board">เพิ่มโครงการ</a> บนบอร์ด และย้ายขั้นตอนด้วยปุ่ม ◀ ▶</li>
+  <li><a data-act="tab" data-v="design">เลือกรูปแบบวิจัย</a> เพื่อรับ checklist ที่เหมาะสม</li>
+  <li><a data-act="tab" data-v="sample">คำนวณขนาดตัวอย่าง</a> และดูชุดทดสอบสูตร</li>
+  <li><a data-act="tab" data-v="ai">ตรวจข้อความก่อนใช้ AI</a> ว่ามีข้อมูลระบุตัวตนหรือไม่</li>
+ </ol></div>`;
+}
+
+/* question builder */
+const FINER=[
+ ['F','Feasible — ทำได้จริง','มีผู้ป่วย/ข้อมูล เวลา คน งบ และทักษะวิเคราะห์เพียงพอหรือไม่'],
+ ['I','Interesting — น่าสนใจ','น่าสนใจพอสำหรับผู้วิจัยและทีมที่จะทำจนจบหรือไม่'],
+ ['N','Novel — ใหม่/เติมช่องว่าง','ทบทวนวรรณกรรมแล้ว และคำถามนี้ยืนยัน/ขยาย/เติมช่องว่างความรู้หรือไม่'],
+ ['E','Ethical — จริยธรรม','ผ่านการพิจารณาจริยธรรมได้ ความเสี่ยงเหมาะสม และการขอความยินยอมชัดเจนหรือไม่'],
+ ['R','Relevant — เกี่ยวข้อง','มีผลต่อการดูแลผู้ป่วย แนวปฏิบัติ หรือนโยบายของหน่วยหรือไม่']];
+function qd(){if(!ui.qdraft)ui.qdraft={id:'',title:'',p:'',i:'',c:'',o:'',t:'',type:'',finer:[0,0,0,0,0]};return ui.qdraft}
+function vQuestion(){
+ const d=qd();
+ const saved=S.questions.map(q=>`<tr><td>${q.ex?'<span class="badge">ตัวอย่าง</span> ':''}<b>${esc(q.title||'(ไม่มีชื่อ)')}</b><br><small class="sub">${esc(pico(q).th)}</small></td>
+  <td style="white-space:nowrap"><button class="btn sm sec" data-act="qload" data-v="${esc(q.id)}">เปิด</button> <button class="btn sm sec" data-act="q2p" data-v="${esc(q.id)}">สร้างโครงการ</button> <button class="btn sm dng" data-act="qdel" data-v="${esc(q.id)}">ลบ</button></td></tr>`).join('');
+ return `<div class="card"><h2>คำถามวิจัย: PICO + FINER</h2>
+ <p class="sub">เขียนคำถามให้ชัดก่อนเริ่ม แล้วทดสอบด้วยเกณฑ์ FINER — ห้ามใส่ข้อมูลที่ระบุตัวผู้ป่วย</p>
+ <div class="grid g2"><div>
+  <label for="q_title">ชื่อเรื่องร่าง</label><input id="q_title" data-q="title" value="${esc(d.title)}" maxlength="200">
+  <label for="q_p">P — ประชากร/ผู้ป่วย</label><textarea id="q_p" data-q="p" placeholder="เช่น ผู้ป่วยผู้ใหญ่ที่ ... ใน ...">${esc(d.p)}</textarea>
+  <label for="q_i">I — การแทรกแซง/ปัจจัยสัมผัส</label><textarea id="q_i" data-q="i">${esc(d.i)}</textarea>
+  <label for="q_c">C — กลุ่มเปรียบเทียบ</label><textarea id="q_c" data-q="c">${esc(d.c)}</textarea>
+  <label for="q_o">O — ผลลัพธ์</label><textarea id="q_o" data-q="o">${esc(d.o)}</textarea>
+  <label for="q_t">T — ช่วงเวลา/สถานที่ (ถ้ามี)</label><input id="q_t" data-q="t" value="${esc(d.t)}" maxlength="200">
+  <label for="q_type">รูปแบบการวิจัยที่คิดไว้</label><select id="q_type" data-q="type">${DESIGNS.map(x=>`<option value="${x.id}" ${x.id===d.type?'selected':''}>${esc(x.th)}</option>`).join('')}</select>
+ </div><div>
+  <h3 style="margin-top:10px">ประโยคคำถามวิจัย</h3>
+  <div class="out" id="q_out_th" aria-live="polite"></div>
+  <div class="out" id="q_out_en" lang="en"></div>
+  <div class="row" style="margin-top:8px"><button class="btn sec sm" data-act="qcopy">คัดลอกประโยค</button></div>
+  <div class="note" id="q_gl"></div>
+ </div></div>
+ <h3>ประเมิน FINER</h3>
+ ${FINER.map((f,ix)=>`<div class="finer"><div><b>${f[0]}</b> · ${f[1]}<small>${f[2]}</small></div>
+  <select data-fi="${ix}" aria-label="${f[1]}">${['ยังไม่ได้ประเมิน/ไม่','บางส่วน','ใช่'].map((t,v)=>`<option value="${v}" ${d.finer[ix]===v?'selected':''}>${t}</option>`).join('')}</select></div>`).join('')}
+ <div class="out" id="q_finer" aria-live="polite"></div>
+ <div class="row" style="margin-top:12px"><button class="btn" data-act="qsave">${d.id?'บันทึกการแก้ไข':'บันทึกคำถามนี้'}</button><button class="btn sec" data-act="qnew">ล้างฟอร์ม</button></div>
+ </div>
+ <div class="card"><h2>คำถามที่บันทึกไว้</h2>${S.questions.length?`<table><tbody>${saved}</tbody></table>`:'<p class="sub">ยังไม่มีคำถามที่บันทึก</p>'}</div>`;
+}
+function pico(d){
+ const p=(d.p||'').trim(),i=(d.i||'').trim(),c=(d.c||'').trim(),o=(d.o||'').trim(),t=(d.t||'').trim();
+ const miss=[];if(!p)miss.push('P');if(!i)miss.push('I');if(!o)miss.push('O');
+ let th='',en='';
+ if(miss.length){th='กรอก '+miss.join(', ')+' เพื่อสร้างประโยคคำถาม';en='Fill in '+miss.join(', ')+' to generate the question.'}
+ else{
+  th=`ใน${p} ${i}${c?' เทียบกับ '+c:''} มีผลต่อ ${o}${t?' ('+t+')':''} อย่างไร?`;
+  en=`In ${p}, how does ${i}${c?' compared with '+c:''} affect ${o}${t?' ('+t+')':''}?`;
+ }
+ return {th,en,ok:!miss.length};
+}
+function qLive(){
+ const d=qd(),r=pico(d);
+ $('#q_out_th').textContent=r.th;$('#q_out_en').textContent=r.en;
+ const y=d.finer.filter(x=>x===2).length,part=d.finer.filter(x=>x===1).length;
+ const weak=FINER.filter((f,ix)=>d.finer[ix]<2).map(f=>f[0]);
+ $('#q_finer').textContent=`FINER: ตอบ "ใช่" ${y}/5 ข้อ, "บางส่วน" ${part} ข้อ`+(weak.length?`\nข้อที่ควรทบทวนก่อนเริ่ม: ${weak.join(', ')}`:'\nครบทั้ง 5 ข้อ — ดำเนินการขั้นต่อไปได้')+'\n(เป็นเครื่องมือช่วยคิด ไม่ใช่คะแนนมาตรฐาน)';
+ const des=DESIGNS.find(x=>x.id===d.type);
+ const g=$('#q_gl');
+ g.innerHTML=des&&des.gl?`แนวทางรายงานที่เกี่ยวข้อง: <b>${GL[des.gl].name}</b> — <a href="#design" data-act="gotodesign" data-v="${des.id}">ดู checklist</a>`:'เลือกรูปแบบการวิจัยเพื่อดู reporting guideline ที่เกี่ยวข้อง';
+}
+/* board */
+function vBoard(){
+ const total=S.projects.length,over=S.projects.filter(p=>p.deadline&&daysUntil(p.deadline)<0&&p.stage!=='manuscript').length;
+ const soon=S.projects.filter(p=>{const d=daysUntil(p.deadline);return p.deadline&&d>=0&&d<=14}).length;
+ const cols=STAGES.map((st,si)=>{
+  const items=S.projects.filter(p=>p.stage===st.id).sort((a,b)=>(a.deadline||'9999').localeCompare(b.deadline||'9999'));
+  return `<div class="col" role="group" aria-label="${st.th}"><h4><span>${si+1}. ${st.th}</span><span class="chip">${items.length}</span></h4>${items.map(p=>card(p,si)).join('')||'<small class="sub">ไม่มีโครงการ</small>'}</div>`;
+ }).join('');
+ return `<div class="card"><div class="row" style="justify-content:space-between"><div><h2>บอร์ดโครงการวิจัยของหน่วย</h2><p class="sub" style="margin:0">ติดตามทุกโครงการจากไอเดียถึงต้นฉบับ — ใช้ชื่อย่อ ไม่ใส่ข้อมูลผู้ป่วย</p></div><button class="btn" data-act="padd">+ เพิ่มโครงการ</button></div>
+ <div class="stats"><div class="stat"><b>${total}</b><span>โครงการทั้งหมด</span></div><div class="stat" style="background:${over?'var(--bad-l)':'var(--teal-l)'}"><b style="color:${over?'var(--bad)':'var(--teal-d)'}">${over}</b><span>เลยกำหนด</span></div><div class="stat" style="background:${soon?'var(--warn-l)':'var(--teal-l)'}"><b style="color:${soon?'var(--warn)':'var(--teal-d)'}">${soon}</b><span>ครบกำหนดใน 14 วัน</span></div></div>
+ <div class="board">${cols}</div></div>`;
+}
+function dchip(p){
+ if(!p.deadline)return '<span class="chip">ไม่มีกำหนด</span>';
+ const d=daysUntil(p.deadline);
+ if(p.stage==='manuscript'&&d<0)return `<span class="chip">${fmtDate(p.deadline)}</span>`;
+ if(d<0)return `<span class="chip over">เลย ${-d} วัน · ${fmtDate(p.deadline)}</span>`;
+ if(d<=14)return `<span class="chip soon">อีก ${d} วัน · ${fmtDate(p.deadline)}</span>`;
+ return `<span class="chip ok">${fmtDate(p.deadline)}</span>`;
+}
+function card(p,si){
+ const des=DESIGNS.find(d=>d.id===p.design);
+ return `<div class="pc"><b>${p.ex?'<span class="badge">ตัวอย่าง</span> ':''}${esc(p.title)}</b>
+ <div>${dchip(p)}</div>
+ ${p.owner?`<div class="sub" style="margin:3px 0 0;font-size:.8rem">👤 ${esc(p.owner)}</div>`:''}
+ ${des&&des.id?`<div class="sub" style="margin:0;font-size:.8rem">${esc(des.th)}</div>`:''}
+ ${p.note?`<div style="font-size:.8rem;margin-top:3px">${esc(p.note)}</div>`:''}
+ <div class="row" style="margin-top:6px;gap:4px">
+  <button class="btn sm sec" data-act="pmove" data-v="${esc(p.id)}" data-d="-1" ${si===0?'disabled':''} aria-label="ย้ายไปขั้นก่อนหน้า">◀</button>
+  <button class="btn sm sec" data-act="pmove" data-v="${esc(p.id)}" data-d="1" ${si===STAGES.length-1?'disabled':''} aria-label="ย้ายไปขั้นถัดไป">▶</button>
+  <button class="btn sm sec" data-act="pedit" data-v="${esc(p.id)}">แก้ไข</button>
+  <button class="btn sm dng" data-act="pdel" data-v="${esc(p.id)}" aria-label="ลบโครงการ">ลบ</button></div></div>`;
+}
+/* design */
+function glKey(){return (ui.glProject||'-')+'|'+GLSEL().gl}
+function GLSEL(){const d=DESIGNS.find(x=>x.id===ui.glDesign)||DESIGNS[1];return d}
+function vDesign(){
+ const d=GLSEL(),g=GL[d.gl];
+ return `<div class="card"><h2>รูปแบบการวิจัย & Reporting guideline</h2>
+ <p class="sub">เลือกรูปแบบการวิจัย เพื่อดู guideline ที่ควรใช้ และ checklist ย่อสำหรับตรวจแผน/ต้นฉบับ</p>
+ <div class="grid g2"><div><label for="g_design">รูปแบบการวิจัย</label><select id="g_design">${DESIGNS.filter(x=>x.id).map(x=>`<option value="${x.id}" ${x.id===ui.glDesign?'selected':''}>${esc(x.th)} → ${GL[x.gl].name}</option>`).join('')}</select></div>
+ <div><label for="g_proj">บันทึก checklist ให้โครงการ</label><select id="g_proj"><option value="">ทั่วไป (ไม่ผูกโครงการ)</option>${S.projects.map(p=>`<option value="${esc(p.id)}" ${p.id===ui.glProject?'selected':''}>${esc(p.title.slice(0,70))}</option>`).join('')}</select></div></div>
+ <div class="note"><b>${g.name}</b> — ใช้กับ: ${g.use}<br><a href="${g.url}" target="_blank" rel="noopener">เปิดเว็บทางการของ ${g.name} ↗</a></div>
+ <div class="note w">นี่เป็นรายการย่อเพื่อช่วยเตือน ไม่ใช่ checklist ฉบับเต็ม — โปรดใช้ฉบับทางการจากเว็บข้างต้นตอนส่งต้นฉบับ</div>
+ <h3>เตรียมก่อนยื่นจริยธรรม (EC)</h3><ul class="clean">${d.prep.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+ <h3>Checklist <span id="g_count" class="chip t"></span></h3>
+ <div class="bar" aria-hidden="true"><i id="g_bar" style="width:0"></i></div>
+ <div>${g.items.map((it,ix)=>{const id='g_'+ix,k=glKey()+'|'+ix;return `<div class="check"><input type="checkbox" id="${id}" data-gc="${esc(k)}" ${S.checks.gl[k]?'checked':''}><label for="${id}">${ix+1}. ${esc(it)}</label></div>`}).join('')}</div>
+ <div class="row" style="margin-top:10px"><button class="btn sec sm" data-act="gclear">ล้างเครื่องหมายของ checklist นี้</button></div></div>`;
+}
+function gProg(){
+ const g=GL[GLSEL().gl],n=g.items.length;let c=0;
+ for(let i=0;i<n;i++)if(S.checks.gl[glKey()+'|'+i])c++;
+ const el=$('#g_count');if(el){el.textContent=c+'/'+n+' ข้อ';$('#g_bar').style.width=(100*c/n)+'%'}
+}
+/* sample size */
+function vSample(){
+ const m=ui.ssMode;
+ const st=selfTest(),pass=st.filter(x=>x[1]).length;
+ return `<div class="card"><h2>ขนาดตัวอย่างโดยสังเขป</h2>
+ <p class="sub">สูตรมาตรฐานแบบ normal approximation เพื่อวางแผนเบื้องต้น — ควรปรึกษานักสถิติสำหรับโครงการจริง</p>
+ <div class="row" role="tablist" aria-label="ประเภทการคำนวณ">
+  ${[['prop','เปรียบเทียบ 2 สัดส่วน'],['mean','เปรียบเทียบค่าเฉลี่ย 2 กลุ่ม'],['prev','ประมาณความชุก']].map(([id,t])=>`<button class="btn ${m===id?'':'sec'}" data-act="ssmode" data-v="${id}">${t}</button>`).join('')}</div>
+ <div class="grid g3" id="ss_form">
+  ${m==='prop'?`<div><label for="s_p1">สัดส่วนกลุ่มที่ 1 (0–1)</label><input id="s_p1" type="number" step="0.01" value="0.5"></div><div><label for="s_p2">สัดส่วนกลุ่มที่ 2 (0–1)</label><input id="s_p2" type="number" step="0.01" value="0.3"></div>`:''}
+  ${m==='mean'?`<div><label for="s_sd">SD ร่วมที่คาด</label><input id="s_sd" type="number" step="any" value="10"></div><div><label for="s_dl">ความต่างค่าเฉลี่ยที่ต้องการตรวจจับ (Δ)</label><input id="s_dl" type="number" step="any" value="5"></div>`:''}
+  ${m==='prev'?`<div><label for="s_pp">ความชุกที่คาด (0–1)</label><input id="s_pp" type="number" step="0.01" value="0.5"></div><div><label for="s_d">ความคลาดเคลื่อนที่ยอมรับ ± (0–1)</label><input id="s_d" type="number" step="0.01" value="0.05"></div>`:''}
+  <div><label for="s_a">ระดับนัยสำคัญ α</label><select id="s_a"><option>0.05</option><option>0.01</option><option>0.1</option></select></div>
+  ${m!=='prev'?`<div><label for="s_pw">อำนาจการทดสอบ (power)</label><select id="s_pw"><option>0.8</option><option>0.9</option><option>0.95</option></select></div>
+  <div><label for="s_sd2">ชนิดการทดสอบ</label><select id="s_sd2"><option value="2">สองข้าง (two-sided)</option><option value="1">ข้างเดียว (one-sided)</option></select></div>`:''}
+  <div><label for="s_dr">คาดว่าจะสูญหาย/ถอนตัว (%)</label><input id="s_dr" type="number" min="0" max="90" step="1" value="10"></div>
+ </div>
+ <div class="out" id="ss_out" aria-live="polite"></div>
+ <div class="row" style="margin-top:8px"><button class="btn sec sm" data-act="sscopy">คัดลอกข้อความสำหรับ Methods</button></div>
+ </div>
+ <div class="card"><h2>ชุดทดสอบความถูกต้องของสูตร <span class="chip ${pass===st.length?'ok':'over'}">${pass}/${st.length} ผ่าน</span></h2>
+ <p class="sub">ทำงานทุกครั้งที่เปิดหน้านี้ เทียบกับค่าอ้างอิงมาตรฐานที่ทราบ</p>
+ <table><tbody>${st.map(x=>`<tr><td>${esc(x[0])}</td><td class="${x[1]?'pass':'fail'}">${x[1]?'✓ ผ่าน':'✗ ไม่ผ่าน'}</td></tr>`).join('')}</tbody></table>
+ <div class="note w">สูตร z-approximation อาจให้ค่าต่ำกว่าโปรแกรมที่ใช้การแจกแจง t (เช่น G*Power) เล็กน้อยในกลุ่มตัวอย่างเล็ก</div></div>`;
+}
+let ssLast='';
+function ssCalc(){
+ const m=ui.ssMode,g=id=>{const e=$('#'+id);return e?parseFloat(e.value):NaN};
+ const alpha=g('s_a'),power=g('s_pw'),sides=parseInt(($('#s_sd2')||{}).value||'2',10),dr=g('s_dr');
+ const out=$('#ss_out');if(!out)return;
+ if(!(dr>=0&&dr<90)){out.textContent='อัตราสูญหายต้องอยู่ระหว่าง 0–89%';ssLast='';return}
+ let r,lines=[],meth='';
+ const infl=n=>Math.ceil(n/(1-dr/100)-1e-9);
+ if(m==='prop'){
+  const p1=g('s_p1'),p2=g('s_p2');r=nTwoProp(p1,p2,alpha,power,sides);
+  if(r.error){out.textContent=r.error;ssLast='';return}
+  lines=['สูตร: n = [Zα·√(2·p̄·q̄) + Zβ·√(p1q1+p2q2)]² / (p1−p2)²',`Zα=${r.za.toFixed(4)}, Zβ=${r.zb.toFixed(4)}, p̄=${((p1+p2)/2).toFixed(3)}`,`ค่าที่คำนวณได้ ${r.raw.toFixed(2)} → ปัดขึ้น ${r.n} ต่อกลุ่ม`];
+  const N=infl(r.n);lines.push(`รวม ${r.n*2} คน; เผื่อสูญหาย ${dr}% → ${N} ต่อกลุ่ม (รวม ${N*2} คน)`);
+  meth=`คำนวณขนาดตัวอย่างเพื่อเปรียบเทียบสัดส่วนสองกลุ่ม (${p1} เทียบ ${p2}) ด้วย α=${alpha} (${sides===2?'สองข้าง':'ข้างเดียว'}) power ${power*100}% ได้ ${r.n} คนต่อกลุ่ม เมื่อเผื่อการสูญหาย ${dr}% ต้องรวบรวม ${N} คนต่อกลุ่ม (รวม ${N*2} คน)`;
+ }else if(m==='mean'){
+  const sd=g('s_sd'),dl=g('s_dl');r=nTwoMean(sd,dl,alpha,power,sides);
+  if(r.error){out.textContent=r.error;ssLast='';return}
+  lines=['สูตร: n = 2·(Zα+Zβ)²·σ² / Δ²',`Zα=${r.za.toFixed(4)}, Zβ=${r.zb.toFixed(4)}, σ=${sd}, Δ=${dl}`,`ค่าที่คำนวณได้ ${r.raw.toFixed(2)} → ปัดขึ้น ${r.n} ต่อกลุ่ม`];
+  const N=infl(r.n);lines.push(`รวม ${r.n*2} คน; เผื่อสูญหาย ${dr}% → ${N} ต่อกลุ่ม (รวม ${N*2} คน)`);
+  meth=`คำนวณขนาดตัวอย่างเพื่อเปรียบเทียบค่าเฉลี่ยสองกลุ่ม โดยคาดว่า SD ร่วม ${sd} และต้องการตรวจจับความต่าง ${dl} ด้วย α=${alpha} (${sides===2?'สองข้าง':'ข้างเดียว'}) power ${power*100}% ได้ ${r.n} คนต่อกลุ่ม เมื่อเผื่อการสูญหาย ${dr}% ต้องรวบรวม ${N} คนต่อกลุ่ม (รวม ${N*2} คน)`;
+ }else{
+  const p=g('s_pp'),d=g('s_d');r=nPrev(p,d,alpha);
+  if(r.error){out.textContent=r.error;ssLast='';return}
+  lines=['สูตร: n = Zα²·p(1−p) / d²',`Zα=${r.za.toFixed(4)}, p=${p}, d=${d}`,`ค่าที่คำนวณได้ ${r.raw.toFixed(2)} → ปัดขึ้น ${r.n} คน`];
+  const N=infl(r.n);lines.push(`เผื่อสูญหาย/ไม่ตอบ ${dr}% → ${N} คน`);
+  meth=`คำนวณขนาดตัวอย่างเพื่อประมาณความชุก โดยคาดว่าความชุก ${p} ความคลาดเคลื่อนที่ยอมรับ ±${d} ที่ระดับความเชื่อมั่น ${(1-alpha)*100}% ได้ ${r.n} คน เมื่อเผื่อการสูญหาย ${dr}% ต้องรวบรวม ${N} คน`;
+ }
+ ssLast=meth;out.textContent=lines.join('\n');
+}
+/* AI */
+function vAI(){
+ const tot=AI_GROUPS.reduce((a,g)=>a+g.items.length,0),done=AI_GROUPS.reduce((a,g)=>a+g.items.filter((x,i)=>S.checks.ai[g.id+'|'+i]).length,0);
+ return `<div class="card"><h2>การใช้ AI อย่างมีจริยธรรมในงานวิจัย</h2>
+ <p class="sub">checklist ก่อนใช้และก่อนส่งงานที่มี AI ช่วย — บันทึกในเครื่องคุณเท่านั้น <span class="chip t" id="ai_count">${done}/${tot} ข้อ</span></p>
+ <div class="bar" aria-hidden="true"><i id="ai_bar" style="width:${100*done/tot}%"></i></div>
+ ${AI_GROUPS.map(g=>`<h3>${g.title}</h3>${g.items.map((it,i)=>{const k=g.id+'|'+i,id='ai_'+g.id+i;return `<div class="check"><input type="checkbox" id="${id}" data-ac="${k}" ${S.checks.ai[k]?'checked':''}><label for="${id}">${esc(it)}</label></div>`}).join('')}`).join('')}
+ </div>
+ <div class="grid g2">
+ <div class="card"><h2>ตรวจข้อมูลระบุตัวตนก่อนวางลงใน AI</h2>
+  <p class="sub">วางข้อความ ระบบจะไฮไลต์รูปแบบที่อาจระบุตัวผู้ป่วยได้ — ประมวลผลในเครื่องคุณ ไม่ส่งออก</p>
+  <textarea id="pii_in" style="min-height:140px" placeholder="วางข้อความที่ต้องการตรวจ"></textarea>
+  <div class="row" style="margin-top:8px"><button class="btn" data-act="piiscan">ตรวจข้อความ</button><button class="btn sec" data-act="piicopy">คัดลอกฉบับตัดข้อมูลออก</button></div>
+  <div class="out" id="pii_out" aria-live="polite">ผลการตรวจจะแสดงที่นี่</div>
+  <div class="note w">เป็นการตรวจรูปแบบเบื้องต้น (เลขบัตร, HN/AN, เบอร์โทร, อีเมล, คำนำหน้า+ชื่อ, วันที่) <b>ไม่รับประกันว่าพบทุกอย่าง</b> — ผู้วิจัยต้องตรวจซ้ำเอง</div></div>
+ <div class="card"><h2>ร่างข้อความเปิดเผยการใช้ AI</h2>
+  <p class="sub">สำหรับใส่ในส่วน Acknowledgements/Methods ตามนโยบายวารสาร</p>
+  <label for="d_tool">เครื่องมือ AI และรุ่น</label><input id="d_tool" placeholder="เช่น ชื่อเครื่องมือ (รุ่น/วันที่ใช้)" maxlength="120">
+  <label for="d_use">ใช้ช่วยส่วนใด</label>
+  <select id="d_use"><option value="ปรับสำนวนภาษาและตรวจไวยากรณ์">ปรับสำนวน/ไวยากรณ์</option><option value="ระดมความคิดโครงร่างหัวข้อ">ระดมความคิดโครงร่าง</option><option value="สรุปและจัดโครงสร้างร่างต้นฉบับ">สรุป/จัดโครงสร้างร่าง</option><option value="ช่วยเขียนโค้ดวิเคราะห์ข้อมูลซึ่งผู้วิจัยตรวจสอบแล้ว">ช่วยเขียนโค้ดวิเคราะห์</option></select>
+  <div class="row" style="margin-top:8px"><button class="btn" data-act="disc">สร้างข้อความ</button><button class="btn sec" data-act="disccopy">คัดลอก</button></div>
+  <div class="out" id="d_out" lang="th">กรอกข้อมูลแล้วกด "สร้างข้อความ"</div></div></div>`;
+}
+/* data */
+function vData(){
+ const ex=S.projects.filter(p=>p.ex).length+S.questions.filter(q=>q.ex).length;
+ return `<div class="card"><h2>จัดการข้อมูล</h2>
+ <p class="sub">ข้อมูลทั้งหมดเก็บในเบราว์เซอร์เครื่องนี้ (localStorage) — ไม่มีการส่งขึ้นเซิร์ฟเวอร์</p>
+ <div class="stats"><div class="stat"><b>${S.projects.length}</b><span>โครงการ</span></div><div class="stat"><b>${S.questions.length}</b><span>คำถามวิจัย</span></div><div class="stat"><b>${Object.keys(S.checks.gl).length+Object.keys(S.checks.ai).length}</b><span>ข้อ checklist ที่ติ๊ก</span></div></div>
+ <div class="row"><button class="btn" data-act="export">⬇ Export JSON (สำรองข้อมูล)</button>
+ <button class="btn sec" data-act="import">⬆ Import JSON</button><input type="file" id="imp" accept="application/json,.json" hidden></div>
+ <div class="note w">การ Import จะแทนที่ข้อมูลปัจจุบันทั้งหมด (ระบบตรวจรูปแบบไฟล์ก่อน)</div>
+ <h3>ข้อมูลตัวอย่าง</h3>
+ <p class="sub">มีรายการตัวอย่าง ${ex} รายการ (ติดป้าย "ตัวอย่าง")</p>
+ <div class="row"><button class="btn sec" data-act="reset">รีเซ็ตเป็นข้อมูลตัวอย่าง</button><button class="btn sec" data-act="rmex">ลบเฉพาะรายการตัวอย่าง</button><button class="btn dng" data-act="wipe">ลบข้อมูลทั้งหมด</button></div></div>`;
+}
+
+/* ---------- actions ---------- */
+const dlg=$('#dlg');let editId='';
+function openProj(id){
+ editId=id||'';const p=S.projects.find(x=>x.id===id)||{title:'',owner:'',stage:'idea',deadline:'',design:'',note:''};
+ $('#dtitle').textContent=id?'แก้ไขโครงการ':'เพิ่มโครงการ';
+ $('#p_title').value=p.title;$('#p_owner').value=p.owner;$('#p_deadline').value=p.deadline;$('#p_note').value=p.note;
+ $('#p_stage').innerHTML=STAGES.map(s=>`<option value="${s.id}" ${s.id===p.stage?'selected':''}>${s.th}</option>`).join('');
+ $('#p_design').innerHTML=DESIGNS.map(d=>`<option value="${d.id}" ${d.id===p.design?'selected':''}>${esc(d.th)}</option>`).join('');
+ dlg.showModal();$('#p_title').focus();
+}
+$('#p_cancel').onclick=()=>dlg.close();
+$('#pform').addEventListener('submit',e=>{
+ e.preventDefault();
+ const v={title:$('#p_title').value.trim().slice(0,200),owner:$('#p_owner').value.trim().slice(0,80),stage:$('#p_stage').value,deadline:$('#p_deadline').value,design:$('#p_design').value,note:$('#p_note').value.trim().slice(0,600)};
+ if(!v.title)return;
+ if(editId){const p=S.projects.find(x=>x.id===editId);if(p){Object.assign(p,v)}}else S.projects.push(Object.assign({id:uid(),ex:false},v));
+ save();dlg.close();render();toast('บันทึกโครงการแล้ว');
+});
+function download(name,text,type){
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+async function copy(t,msg){
+ try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove()}
+ toast(msg||'คัดลอกแล้ว');
+}
+let lastRedact='',lastDisc='';
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-act]');if(!b)return;
+ const a=b.dataset.act,v=b.dataset.v;
+ if(a==='gotodesign'){e.preventDefault();ui.glDesign=v;setTab('design');return}
+ switch(a){
+  case 'tab':setTab(v);break;
+  case 'padd':openProj('');break;
+  case 'pedit':openProj(v);break;
+  case 'pdel':if(confirm('ลบโครงการนี้?')){S.projects=S.projects.filter(p=>p.id!==v);save();render();toast('ลบแล้ว')}break;
+  case 'pmove':{const p=S.projects.find(x=>x.id===v);if(p){const i=STAGES.findIndex(s=>s.id===p.stage)+parseInt(b.dataset.d,10);if(i>=0&&i<STAGES.length){p.stage=STAGES[i].id;save();render();toast('ย้ายไป: '+STAGES[i].th)}}break}
+  case 'qsave':{const d=qd();if(!d.title.trim()&&!d.p.trim()){toast('กรอกชื่อเรื่องหรือ P อย่างน้อยหนึ่งช่อง');break}
+   const rec=Object.assign({},d,{finer:d.finer.slice(),ex:false,saved:todayISO()});
+   if(d.id){const i=S.questions.findIndex(q=>q.id===d.id);if(i>=0)S.questions[i]=rec;else S.questions.push(rec)}else{rec.id=uid();S.questions.push(rec);d.id=rec.id}
+   save();render();toast('บันทึกคำถามแล้ว');break}
+  case 'qnew':ui.qdraft=null;render();break;
+  case 'qload':{const q=S.questions.find(x=>x.id===v);if(q){ui.qdraft=Object.assign({},q,{finer:q.finer.slice()});render();window.scrollTo({top:0})}break}
+  case 'qdel':if(confirm('ลบคำถามนี้?')){S.questions=S.questions.filter(q=>q.id!==v);if(ui.qdraft&&ui.qdraft.id===v)ui.qdraft=null;save();render()}break;
+  case 'q2p':{const q=S.questions.find(x=>x.id===v);if(q){S.projects.push({id:uid(),ex:false,title:q.title||pico(q).th.slice(0,120),owner:'',stage:'idea',deadline:'',design:q.type,note:'สร้างจากคำถามวิจัยที่บันทึกไว้'});save();toast('เพิ่มโครงการในบอร์ดแล้ว (ขั้น "ไอเดีย")')}break}
+  case 'qcopy':copy(pico(qd()).th+'\n'+pico(qd()).en);break;
+  case 'gclear':{const pre=glKey()+'|';Object.keys(S.checks.gl).forEach(k=>{if(k.startsWith(pre))delete S.checks.gl[k]});save();render()}break;
+  case 'ssmode':ui.ssMode=v;render();break;
+  case 'sscopy':if(ssLast)copy(ssLast,'คัดลอกข้อความแล้ว');break;
+  case 'piiscan':{const t=$('#pii_in').value,h=scanPII(t),o=$('#pii_out');
+   if(!t.trim()){o.textContent='กรุณาวางข้อความก่อน';break}
+   lastRedact=redact(t,h);
+   if(!h.length){o.innerHTML='ไม่พบรูปแบบที่ตรวจได้ — แต่ยังต้องอ่านทวนด้วยตนเองก่อนใช้ AI'}
+   else{let html='',pos=0;h.forEach(x=>{html+=esc(t.slice(pos,x.s))+`<mark class="${x.sev==='r'?'r':''}" title="${esc(x.k)}">${esc(x.t)}</mark>`;pos=x.e});html+=esc(t.slice(pos));
+    const cnt={};h.forEach(x=>cnt[x.k]=(cnt[x.k]||0)+1);
+    o.innerHTML=`<b>พบ ${h.length} จุดที่ควรตรวจ:</b> ${Object.entries(cnt).map(([k,n])=>esc(k)+' ×'+n).join(', ')}<hr>`+html}
+   break}
+  case 'piicopy':if(lastRedact)copy(lastRedact,'คัดลอกฉบับตัดข้อมูลออกแล้ว');else toast('กดตรวจข้อความก่อน');break;
+  case 'disc':{const tool=$('#d_tool').value.trim()||'[ระบุชื่อเครื่องมือ AI และรุ่น]',use=$('#d_use').value;
+   lastDisc=`ผู้วิจัยใช้ ${tool} เพื่อ${use} โดยไม่ได้ป้อนข้อมูลที่ระบุตัวผู้ป่วย ผู้ประพันธ์ได้ตรวจสอบและแก้ไขเนื้อหาทั้งหมด และรับผิดชอบความถูกต้องของผลงานนี้\n\nThe authors used ${tool} to assist with ${({'ปรับสำนวนภาษาและตรวจไวยากรณ์':'language editing and grammar checking','ระดมความคิดโครงร่างหัวข้อ':'brainstorming the outline','สรุปและจัดโครงสร้างร่างต้นฉบับ':'summarising and structuring the draft','ช่วยเขียนโค้ดวิเคราะห์ข้อมูลซึ่งผู้วิจัยตรวจสอบแล้ว':'drafting analysis code, which was verified by the authors'})[use]}. No patient-identifiable data were entered. The authors reviewed and edited all content and take full responsibility for the work.`;
+   $('#d_out').textContent=lastDisc;break}
+  case 'disccopy':if(lastDisc)copy(lastDisc);else toast('กดสร้างข้อความก่อน');break;
+  case 'export':{const d=new Date();download('research-os-backup-'+isoLocal(d)+'.json',JSON.stringify({app:'research-os',version:1,exportedAt:d.toISOString(),data:S},null,2),'application/json');toast('ดาวน์โหลดไฟล์สำรองแล้ว')}break;
+  case 'import':$('#imp').click();break;
+  case 'reset':if(confirm('รีเซ็ตเป็นข้อมูลตัวอย่าง? ข้อมูลปัจจุบันจะถูกแทนที่ทั้งหมด (แนะนำให้ Export ก่อน)')){S=seed();ui.qdraft=null;save();render();toast('รีเซ็ตเป็นข้อมูลตัวอย่างแล้ว')}break;
+  case 'rmex':if(confirm('ลบเฉพาะรายการที่ติดป้าย "ตัวอย่าง"?')){S.projects=S.projects.filter(p=>!p.ex);S.questions=S.questions.filter(q=>!q.ex);S.example=false;save();render();toast('ลบรายการตัวอย่างแล้ว')}break;
+  case 'wipe':if(confirm('ลบข้อมูลทั้งหมดถาวร?')){S={v:1,example:false,projects:[],questions:[],checks:{gl:{},ai:{}}};ui.qdraft=null;save();render();toast('ลบข้อมูลทั้งหมดแล้ว')}break;
+ }
+});
+document.addEventListener('change',e=>{
+ const t=e.target;
+ if(t.id==='imp'){
+  const f=t.files[0];if(!f)return;
+  if(f.size>2e6){toast('ไฟล์ใหญ่เกินไป');t.value='';return}
+  const rd=new FileReader();
+  rd.onload=()=>{try{
+   const j=JSON.parse(rd.result);
+   if(!j||j.app!=='research-os'||!j.data||!Array.isArray(j.data.projects))throw new Error('format');
+   if(!confirm('นำเข้าไฟล์นี้และแทนที่ข้อมูลปัจจุบัน?'))return;
+   S=norm(j.data);ui.qdraft=null;save();render();toast('นำเข้าข้อมูลสำเร็จ')}catch(err){toast('ไฟล์ไม่ถูกต้อง: ต้องเป็นไฟล์ที่ Export จาก Research OS')}
+   t.value=''};
+  rd.readAsText(f);return;
+ }
+ if(t.dataset.gc!==undefined){if(t.checked)S.checks.gl[t.dataset.gc]=true;else delete S.checks.gl[t.dataset.gc];save();gProg();return}
+ if(t.dataset.ac!==undefined){if(t.checked)S.checks.ai[t.dataset.ac]=true;else delete S.checks.ai[t.dataset.ac];save();
+  const tot=AI_GROUPS.reduce((a,g)=>a+g.items.length,0),n=Object.keys(S.checks.ai).length;$('#ai_count').textContent=n+'/'+tot+' ข้อ';$('#ai_bar').style.width=(100*n/tot)+'%';return}
+ if(t.id==='g_design'){ui.glDesign=t.value;render();return}
+ if(t.id==='g_proj'){ui.glProject=t.value;render();return}
+ if(t.dataset.fi!==undefined){qd().finer[+t.dataset.fi]=parseInt(t.value,10);qLive();return}
+ if(t.dataset.q!==undefined){qd()[t.dataset.q]=t.value;qLive()}
+});
+document.addEventListener('input',e=>{
+ const t=e.target;
+ if(t.dataset.q!==undefined){qd()[t.dataset.q]=t.value;qLive()}
+ else if(t.closest('#ss_form'))ssCalc();
+});
+$('#tabs').addEventListener('keydown',e=>{
+ if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+ const i=TABS.findIndex(x=>x[0]===tab),n=(i+(e.key==='ArrowRight'?1:-1)+TABS.length)%TABS.length;setTab(TABS[n][0]);$('#tab-'+TABS[n][0]).focus();
+});
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h!==tab)setTab(h,false)});
+window.ROS={phi,zInv,nTwoProp,nTwoMean,nPrev,selfTest,scanPII,redact,get state(){return S}};
+const h0=location.hash.slice(1);if(TABS.some(x=>x[0]===h0))tab=h0;
+try{if(!localStorage.getItem(KEY))save()}catch(e){storageOK=false}
+render();
+})();
+</script>
+</body>
+</html>
